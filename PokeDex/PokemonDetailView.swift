@@ -4,13 +4,31 @@ struct PokemonDetailView: View {
     let pokemon: Pokemon
     @ObservedObject var favoriteManager = FavoriteManager.shared
 
+    // États pour l'animation du sprite
+    @State private var spriteScale: CGFloat = 0.3
+    @State private var spriteOpacity: Double = 0.0
+    @State private var spriteRotation: Double = -10 // Effet d'oscillation
+
     var body: some View {
         VStack {
+            // Sprite avec animation améliorée (apparition + zoom + rotation)
             AsyncImage(url: URL(string: pokemon.imageURL)) { image in
                 image.resizable()
                     .scaledToFit()
                     .frame(width: 200, height: 200)
                     .shadow(radius: 10)
+                    .scaleEffect(spriteScale) // Effet de zoom progressif
+                    .opacity(spriteOpacity) // Effet de fondu
+                    .rotationEffect(.degrees(spriteRotation)) // Légère oscillation
+                    .onAppear {
+                        withAnimation(.easeOut(duration: 0.6)) {
+                            spriteOpacity = 1.0 // Apparition fluide
+                        }
+                        withAnimation(.spring(response: 0.6, dampingFraction: 0.5, blendDuration: 0.2)) {
+                            spriteScale = 1.0 // Zoom progressif
+                            spriteRotation = 0 // Rétablir la rotation
+                        }
+                    }
             } placeholder: {
                 ProgressView()
             }
@@ -19,6 +37,7 @@ struct PokemonDetailView: View {
                 .font(.largeTitle)
                 .fontWeight(.bold)
 
+            // Affichage des types
             HStack {
                 ForEach(pokemon.types, id: \.type.name) { type in
                     Text(type.type.name.capitalized)
@@ -29,6 +48,7 @@ struct PokemonDetailView: View {
                 }
             }
 
+            // Affichage des statistiques avec animation
             VStack(alignment: .leading) {
                 Text("Statistiques")
                     .font(.title2)
@@ -40,13 +60,15 @@ struct PokemonDetailView: View {
                         Text(stat.stat.name.capitalized)
                             .frame(width: 100, alignment: .leading)
 
-                        ProgressView(value: Double(stat.baseStat), total: 100)
+                        ProgressView(value: Double(min(stat.baseStat, 100)), total: 100)
                             .progressViewStyle(LinearProgressViewStyle(tint: .blue))
+                            .animation(.easeInOut(duration: 0.5), value: stat.baseStat) // Animation fluide
                     }
                 }
             }
             .padding()
 
+            // Bouton Ajouter/Retirer des favoris
             Button(action: {
                 toggleFavorite()
             }) {
@@ -72,7 +94,6 @@ struct PokemonDetailView: View {
         }
     }
 }
-
 
 #Preview {
     PokemonDetailView(pokemon: Pokemon(
