@@ -7,6 +7,9 @@ enum SortOption: String, CaseIterable, Identifiable {
 }
 
 struct ContentView: View {
+    // **Dark/Light mode storage**
+    @AppStorage("isDarkMode") var isDarkMode: Bool = false
+    
     @StateObject private var viewModel = PokemonViewModel()
     @ObservedObject private var favoriteManager = FavoriteManager.shared
     @State private var selectedPokemon: Pokemon?
@@ -65,7 +68,7 @@ struct ContentView: View {
                 LazyVStack(spacing: 12) {
                     ForEach(filteredPokemons) { pokemon in
                         Button {
-                            // **Effet de zoom appliqué via le style**
+                            // **Zoom effect on tap**
                             withAnimation {
                                 selectedPokemon = pokemon
                             }
@@ -95,57 +98,59 @@ struct ContentView: View {
                             .shadow(radius: 2)
                         }
                         .buttonStyle(ZoomButtonStyle())
-                        // **Transition animée pour l'affichage des cartes**
+                        // **Animated transition for cards**
                         .transition(.scale.combined(with: .opacity))
                     }
                 }
                 .padding()
-                // **Animation lors des changements de filtre/tris**
+                // **Animation on filter/sort changes**
                 .animation(.easeInOut, value: filteredPokemons)
             }
             .searchable(text: $searchText, prompt: "Rechercher un Pokémon")
             .navigationTitle("Pokédex")
             .toolbar {
-                // **Menu pour filtrer par type**
+                // **Menu for filtering by type**
                 ToolbarItem(placement: .navigationBarLeading) {
                     Menu {
                         ForEach(availableTypes, id: \.self) { type in
                             Button(type) {
-                                withAnimation {
-                                    selectedType = type
-                                }
+                                withAnimation { selectedType = type }
                             }
                         }
                     } label: {
                         Label("Type: \(selectedType)", systemImage: "line.horizontal.3.decrease.circle")
                     }
                 }
-                // **Bouton pour afficher/masquer les favoris**
+                // **Dark/Light mode toggle**
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
-                        withAnimation {
-                            showFavoritesOnly.toggle()
-                        }
+                        isDarkMode.toggle()
+                    } label: {
+                        Image(systemName: isDarkMode ? "sun.max.fill" : "moon.fill")
+                    }
+                }
+                // **Favorites filter button**
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        withAnimation { showFavoritesOnly.toggle() }
                     } label: {
                         Label("Favoris", systemImage: showFavoritesOnly ? "star.fill" : "star")
                             .foregroundColor(showFavoritesOnly ? .yellow : .primary)
                     }
                 }
-                // **Menu pour trier**
+                // **Sort menu**
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Menu {
                         ForEach(SortOption.allCases) { option in
                             Button(option.rawValue) {
-                                withAnimation {
-                                    sortOption = option
-                                }
+                                withAnimation { sortOption = option }
                             }
                         }
                     } label: {
                         Label("Trier", systemImage: "arrow.up.arrow.down.circle")
                     }
                 }
-                // **Bouton paramètres**
+                // **Settings button**
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
                         showSettings.toggle()
@@ -154,20 +159,20 @@ struct ContentView: View {
                     }
                 }
             }
-            // **Sheet pour afficher les détails d'un Pokémon**
+            // **Sheet for Pokemon detail**
             .sheet(item: $selectedPokemon) { pokemon in
                 PokemonDetailView(pokemon: pokemon)
             }
-            // **Settings modal avec animation de chargement**
+            // **Settings modal**
             .sheet(isPresented: $showSettings) {
                 SettingsView(isLoading: $viewModel.isLoading) { newLimit in
                     viewModel.refreshPokemons(limit: newLimit)
                 }
             }
-            .task {
-                viewModel.fetchPokemons()
-            }
+            .task { viewModel.fetchPokemons() }
         }
+        // **Apply dark/light mode**
+        .preferredColorScheme(isDarkMode ? .dark : .light)
     }
     
     /// **Calcule la moyenne des stats d'un Pokémon**
@@ -178,7 +183,6 @@ struct ContentView: View {
     }
 }
 
-// **ZoomButtonStyle for a zoom effect on tap**
 struct ZoomButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
