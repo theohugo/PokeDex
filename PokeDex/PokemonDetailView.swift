@@ -3,7 +3,8 @@ import SwiftUI
 struct PokemonDetailView: View {
     let pokemon: Pokemon
     @ObservedObject var favoriteManager = FavoriteManager.shared
-
+    @State private var showCombatMode: Bool = false
+    
     // États pour l'animation du sprite
     @State private var spriteScale: CGFloat = 0.3
     @State private var spriteOpacity: Double = 0.0
@@ -11,22 +12,22 @@ struct PokemonDetailView: View {
 
     var body: some View {
         VStack {
-            // Sprite avec animation améliorée (apparition + zoom + rotation)
+            // **Sprite with animation**
             AsyncImage(url: URL(string: pokemon.imageURL)) { image in
                 image.resizable()
                     .scaledToFit()
                     .frame(width: 200, height: 200)
                     .shadow(radius: 10)
-                    .scaleEffect(spriteScale) // Effet de zoom progressif
-                    .opacity(spriteOpacity) // Effet de fondu
-                    .rotationEffect(.degrees(spriteRotation)) // Légère oscillation
+                    .scaleEffect(spriteScale)
+                    .opacity(spriteOpacity)
+                    .rotationEffect(.degrees(spriteRotation))
                     .onAppear {
                         withAnimation(.easeOut(duration: 0.6)) {
-                            spriteOpacity = 1.0 // Apparition fluide
+                            spriteOpacity = 1.0
                         }
                         withAnimation(.spring(response: 0.6, dampingFraction: 0.5, blendDuration: 0.2)) {
-                            spriteScale = 1.0 // Zoom progressif
-                            spriteRotation = 0 // Rétablir la rotation
+                            spriteScale = 1.0
+                            spriteRotation = 0
                         }
                     }
             } placeholder: {
@@ -37,7 +38,7 @@ struct PokemonDetailView: View {
                 .font(.largeTitle)
                 .fontWeight(.bold)
 
-            // Affichage des types
+            // **Display types**
             HStack {
                 ForEach(pokemon.types, id: \.type.name) { type in
                     Text(type.type.name.capitalized)
@@ -48,7 +49,7 @@ struct PokemonDetailView: View {
                 }
             }
 
-            // Affichage des statistiques avec animation
+            // **Display stats**
             VStack(alignment: .leading) {
                 Text("Statistiques")
                     .font(.title2)
@@ -62,13 +63,13 @@ struct PokemonDetailView: View {
 
                         ProgressView(value: Double(min(stat.baseStat, 100)), total: 100)
                             .progressViewStyle(LinearProgressViewStyle(tint: .blue))
-                            .animation(.easeInOut(duration: 0.5), value: stat.baseStat) // Animation fluide
+                            .animation(.easeInOut(duration: 0.5), value: stat.baseStat)
                     }
                 }
             }
             .padding()
 
-            // Bouton Ajouter/Retirer des favoris
+            // **Favorite button**
             Button(action: {
                 toggleFavorite()
             }) {
@@ -79,6 +80,23 @@ struct PokemonDetailView: View {
                     .cornerRadius(10)
             }
             .animation(.easeInOut, value: favoriteManager.isFavorite(id: pokemon.id))
+            
+            // **Bouton Combat**
+            Button(action: {
+                showCombatMode = true
+            }) {
+                Text("Combattre")
+                    .fontWeight(.bold)
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(Color.red.opacity(0.7))
+                    .foregroundColor(.white)
+                    .cornerRadius(10)
+            }
+            .padding(.vertical)
+            .sheet(isPresented: $showCombatMode) {
+                CombatView(playerPokemon: pokemon)
+            }
 
             Spacer()
         }

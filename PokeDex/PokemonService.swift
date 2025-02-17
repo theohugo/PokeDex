@@ -27,7 +27,17 @@ class PokemonService {
         let (data, _) = try await URLSession.shared.data(from: url)
         return try JSONDecoder().decode(Pokemon.self, from: data)
     }
+    
+    // **Fetch Pokemon by id**
+    func fetchPokemonById(_ id: Int) async throws -> Pokemon {
+        let url = URL(string: "https://pokeapi.co/api/v2/pokemon/\(id)")!
+        let (data, _) = try await URLSession.shared.data(from: url)
+        return try JSONDecoder().decode(Pokemon.self, from: data)
+    }
 }
+
+
+
 
 // MARK: - JSON response structs
 struct PokemonListResponse: Codable {
