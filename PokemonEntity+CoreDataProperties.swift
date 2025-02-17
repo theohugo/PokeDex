@@ -17,8 +17,26 @@ extension PokemonEntity {
     }
 
     @NSManaged public var id: Int64
-    @NSManaged public var name: String?
     @NSManaged public var imageURL: String?
+    @NSManaged public var name: String?
+    @NSManaged public var stats: NSSet?
+
+}
+
+// MARK: Generated accessors for stats
+extension PokemonEntity {
+
+    @objc(addStatsObject:)
+    @NSManaged public func addToStats(_ value: PokemonStatEntity)
+
+    @objc(removeStatsObject:)
+    @NSManaged public func removeFromStats(_ value: PokemonStatEntity)
+
+    @objc(addStats:)
+    @NSManaged public func addToStats(_ values: NSSet)
+
+    @objc(removeStats:)
+    @NSManaged public func removeFromStats(_ values: NSSet)
 
 }
 
