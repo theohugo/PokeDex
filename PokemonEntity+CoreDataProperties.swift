@@ -20,6 +20,7 @@ extension PokemonEntity {
     @NSManaged public var imageURL: String?
     @NSManaged public var name: String?
     @NSManaged public var stats: NSSet?
+    @NSManaged public var types: NSSet?
 
 }
 
@@ -37,6 +38,23 @@ extension PokemonEntity {
 
     @objc(removeStats:)
     @NSManaged public func removeFromStats(_ values: NSSet)
+
+}
+
+// MARK: Generated accessors for types
+extension PokemonEntity {
+
+    @objc(addTypesObject:)
+    @NSManaged public func addToTypes(_ value: PokemonTypeEntity)
+
+    @objc(removeTypesObject:)
+    @NSManaged public func removeFromTypes(_ value: PokemonTypeEntity)
+
+    @objc(addTypes:)
+    @NSManaged public func addToTypes(_ values: NSSet)
+
+    @objc(removeTypes:)
+    @NSManaged public func removeFromTypes(_ values: NSSet)
 
 }
 

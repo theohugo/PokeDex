@@ -10,10 +10,15 @@
         <attribute name="imageURL" optional="YES" attributeType="String"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <relationship name="stats" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="PokemonStatEntity" inverseName="pokemon" inverseEntity="PokemonStatEntity"/>
+        <relationship name="types" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="PokemonTypeEntity" inverseName="pokemon" inverseEntity="PokemonTypeEntity"/>
     </entity>
     <entity name="PokemonStatEntity" representedClassName="PokemonStatEntity" syncable="YES">
         <attribute name="baseStat" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <relationship name="pokemon" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PokemonEntity" inverseName="stats" inverseEntity="PokemonEntity"/>
+    </entity>
+    <entity name="PokemonTypeEntity" representedClassName="PokemonTypeEntity" syncable="YES">
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <relationship name="pokemon" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PokemonEntity" inverseName="types" inverseEntity="PokemonEntity"/>
     </entity>
 </model>

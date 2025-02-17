@@ -42,7 +42,14 @@ class PokemonViewModel: ObservableObject {
             entity.name = pokemon.name
             entity.imageURL = pokemon.imageURL
 
-            // Sauvegarde des statistiques
+            // **Sauvegarde des types**
+            for type in pokemon.types {
+                let typeEntity = PokemonTypeEntity(context: context)
+                typeEntity.name = type.type.name
+                typeEntity.pokemon = entity
+            }
+
+            // **Sauvegarde des statistiques**
             for stat in pokemon.stats {
                 let statEntity = PokemonStatEntity(context: context)
                 statEntity.name = stat.stat.name
@@ -54,6 +61,7 @@ class PokemonViewModel: ObservableObject {
         CoreDataManager.shared.saveContext()
     }
 
+
     
     // Chargement du cache depuis CoreData
     private func loadCachedPokemons() -> [Pokemon] {
@@ -63,6 +71,12 @@ class PokemonViewModel: ObservableObject {
         do {
             let cachedEntities = try context.fetch(request)
             return cachedEntities.map { entity in
+                // **Récupération des types**
+                let types = (entity.types as? Set<PokemonTypeEntity>)?.map { typeEntity in
+                    PokemonTypeWrapper(type: PokemonType(name: typeEntity.name ?? "unknown"))
+                } ?? []
+
+                // **Récupération des statistiques**
                 let stats = (entity.stats as? Set<PokemonStatEntity>)?.map { statEntity in
                     StatWrapper(baseStat: Int(statEntity.baseStat), stat: Stat(name: statEntity.name ?? ""))
                 } ?? []
@@ -71,7 +85,7 @@ class PokemonViewModel: ObservableObject {
                     id: Int(entity.id),
                     name: entity.name ?? "",
                     sprites: Sprites(frontDefault: entity.imageURL ?? ""),
-                    types: [], // Si tu veux stocker les types, il faudra les ajouter aussi
+                    types: types,
                     stats: stats
                 )
             }
@@ -80,5 +94,6 @@ class PokemonViewModel: ObservableObject {
             return []
         }
     }
+
 
 }
