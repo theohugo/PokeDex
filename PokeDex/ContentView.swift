@@ -13,7 +13,7 @@ struct ContentView: View {
     @State private var searchText: String = ""
     @State private var selectedType: String = "All"
     @State private var sortOption: SortOption = .alphabetical
-    @State private var showFavoritesOnly: Bool = false // Nouveau filtre pour afficher uniquement les favoris
+    @State private var showFavoritesOnly: Bool = false // Filtrage des favoris
 
     // Computed property pour filtrer et trier la liste
     var filteredPokemons: [Pokemon] {
@@ -41,10 +41,10 @@ struct ContentView: View {
         case .alphabetical:
             filtered.sort { $0.name.lowercased() < $1.name.lowercased() }
         case .stat:
-            filtered.sort {
-                let stat0 = $0.stats.first?.baseStat ?? 0
-                let stat1 = $1.stats.first?.baseStat ?? 0
-                return stat0 > stat1
+            filtered.sort { pokemon1, pokemon2 in
+                let averageStat1 = calculateAverageStat(for: pokemon1)
+                let averageStat2 = calculateAverageStat(for: pokemon2)
+                return averageStat1 > averageStat2
             }
         }
 
@@ -122,6 +122,13 @@ struct ContentView: View {
             }
             .task { viewModel.fetchPokemons() }
         }
+    }
+
+    /// **Calcule la moyenne des stats d'un Pokémon**
+    private func calculateAverageStat(for pokemon: Pokemon) -> Double {
+        guard !pokemon.stats.isEmpty else { return 0 }
+        let totalStats = pokemon.stats.reduce(0) { $0 + Double($1.baseStat) }
+        return totalStats / Double(pokemon.stats.count)
     }
 }
 
