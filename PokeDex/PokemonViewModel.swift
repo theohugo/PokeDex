@@ -4,19 +4,19 @@ import CoreData
 class PokemonViewModel: ObservableObject {
     @Published var pokemons: [Pokemon] = []
     @Published var isLoading = false
-
+    
     func fetchPokemons() {
         isLoading = true
-
-        // Chargement du cache CoreData
+        
+        // **Load CoreData cache**
         let cachedPokemons = loadCachedPokemons()
         if !cachedPokemons.isEmpty {
             self.pokemons = cachedPokemons
-            self.isLoading = false
+            isLoading = false
             return
         }
-
-        // Récupération via l'API
+        
+        // **Fetch via API**
         Task {
             do {
                 let fetchedPokemons = try await PokemonService.shared.fetchPokemonList()
@@ -26,30 +26,66 @@ class PokemonViewModel: ObservableObject {
                     self.isLoading = false
                 }
             } catch {
-                print("Erreur lors du chargement des Pokémon : \(error)")
-                isLoading = false
+                print("Error fetching Pokémon: \(error)")
+                DispatchQueue.main.async {
+                    self.isLoading = false
+                }
             }
         }
     }
     
-    // Sauvegarde en cache avec CoreData
+    // **Clear the CoreData cache**
+    private func clearCache() {
+        let context = CoreDataManager.shared.container.viewContext
+        let request: NSFetchRequest<NSFetchRequestResult> = PokemonEntity.fetchRequest()
+        let deleteRequest = NSBatchDeleteRequest(fetchRequest: request)
+        do {
+            try context.execute(deleteRequest)
+            try context.save()
+        } catch {
+            print("Error clearing cache: \(error)")
+        }
+    }
+    
+    // **Force refresh without cache**
+    func refreshPokemons(limit: Int) {
+        isLoading = true
+        clearCache() // **Clear previous cache**
+        Task {
+            do {
+                let fetchedPokemons = try await PokemonService.shared.fetchPokemonList(limit: limit)
+                DispatchQueue.main.async {
+                    self.pokemons = fetchedPokemons
+                    self.savePokemonsToCache(pokemons: fetchedPokemons)
+                    self.isLoading = false
+                }
+            } catch {
+                print("Error refreshing Pokémon: \(error)")
+                DispatchQueue.main.async {
+                    self.isLoading = false
+                }
+            }
+        }
+    }
+    
+    // **Save Pokémon to CoreData**
     private func savePokemonsToCache(pokemons: [Pokemon]) {
         let context = CoreDataManager.shared.container.viewContext
-
+        
         for pokemon in pokemons {
             let entity = PokemonEntity(context: context)
             entity.id = Int64(pokemon.id)
             entity.name = pokemon.name
             entity.imageURL = pokemon.imageURL
-
-            // **Sauvegarde des types**
+            
+            // **Save types**
             for type in pokemon.types {
                 let typeEntity = PokemonTypeEntity(context: context)
                 typeEntity.name = type.type.name
                 typeEntity.pokemon = entity
             }
-
-            // **Sauvegarde des statistiques**
+            
+            // **Save stats**
             for stat in pokemon.stats {
                 let statEntity = PokemonStatEntity(context: context)
                 statEntity.name = stat.stat.name
@@ -57,30 +93,28 @@ class PokemonViewModel: ObservableObject {
                 statEntity.pokemon = entity
             }
         }
-
+        
         CoreDataManager.shared.saveContext()
     }
-
-
     
-    // Chargement du cache depuis CoreData
+    // **Load Pokémon from CoreData**
     private func loadCachedPokemons() -> [Pokemon] {
         let context = CoreDataManager.shared.container.viewContext
         let request: NSFetchRequest<PokemonEntity> = PokemonEntity.fetchRequest()
-
+        
         do {
             let cachedEntities = try context.fetch(request)
             return cachedEntities.map { entity in
-                // **Récupération des types**
+                // **Retrieve types**
                 let types = (entity.types as? Set<PokemonTypeEntity>)?.map { typeEntity in
                     PokemonTypeWrapper(type: PokemonType(name: typeEntity.name ?? "unknown"))
                 } ?? []
-
-                // **Récupération des statistiques**
+                
+                // **Retrieve stats**
                 let stats = (entity.stats as? Set<PokemonStatEntity>)?.map { statEntity in
                     StatWrapper(baseStat: Int(statEntity.baseStat), stat: Stat(name: statEntity.name ?? ""))
                 } ?? []
-
+                
                 return Pokemon(
                     id: Int(entity.id),
                     name: entity.name ?? "",
@@ -90,10 +124,8 @@ class PokemonViewModel: ObservableObject {
                 )
             }
         } catch {
-            print("❌ Erreur lors du chargement du cache : \(error)")
+            print("Error loading cache: \(error)")
             return []
         }
     }
-
-
 }

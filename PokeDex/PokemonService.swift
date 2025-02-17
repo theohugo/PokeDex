@@ -1,10 +1,10 @@
 import Foundation
 
-// MARK: - Service de récupération des Pokémon
+// MARK: - Pokémon fetching service
 class PokemonService {
     static let shared = PokemonService()
     private let baseURL = "https://pokeapi.co/api/v2/pokemon"
-
+    
     func fetchPokemonList(limit: Int = 151) async throws -> [Pokemon] {
         let url = URL(string: "\(baseURL)?limit=\(limit)")!
         let (data, _) = try await URLSession.shared.data(from: url)
@@ -29,7 +29,7 @@ class PokemonService {
     }
 }
 
-// MARK: - Struct pour la réponse JSON de la liste
+// MARK: - JSON response structs
 struct PokemonListResponse: Codable {
     let results: [PokemonResult]
 }

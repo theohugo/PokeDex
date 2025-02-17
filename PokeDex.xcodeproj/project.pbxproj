@@ -31,6 +31,7 @@
 		584965242D6341D400F8D73F /* PokemonEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5849651C2D6341D400F8D73F /* PokemonEntity+CoreDataProperties.swift */; };
 		584965252D6341D400F8D73F /* PokemonStatEntity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5849651D2D6341D400F8D73F /* PokemonStatEntity+CoreDataClass.swift */; };
 		584965262D6341D400F8D73F /* PokemonStatEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5849651E2D6341D400F8D73F /* PokemonStatEntity+CoreDataProperties.swift */; };
+		5849652A2D634A8900F8D73F /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 584965292D634A8900F8D73F /* SettingsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -79,6 +80,7 @@
 		5849651C2D6341D400F8D73F /* PokemonEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PokemonEntity+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		5849651D2D6341D400F8D73F /* PokemonStatEntity+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PokemonStatEntity+CoreDataClass.swift"; sourceTree = "<group>"; };
 		5849651E2D6341D400F8D73F /* PokemonStatEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PokemonStatEntity+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		584965292D634A8900F8D73F /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -151,6 +153,7 @@
 				584964D02D6326B300F8D73F /* PokedexModel.xcdatamodeld */,
 				584964D72D632C8200F8D73F /* PokemonDetailView.swift */,
 				584964D92D632CC900F8D73F /* FavoriteManager.swift */,
+				584965292D634A8900F8D73F /* SettingsView.swift */,
 			);
 			path = PokeDex;
 			sourceTree = "<group>";
@@ -315,6 +318,7 @@
 				584964A32D631F6C00F8D73F /* PokeDex.xcdatamodeld in Sources */,
 				584965232D6341D400F8D73F /* PokemonEntity+CoreDataClass.swift in Sources */,
 				584965262D6341D400F8D73F /* PokemonStatEntity+CoreDataProperties.swift in Sources */,
+				5849652A2D634A8900F8D73F /* SettingsView.swift in Sources */,
 				584964D22D6326B300F8D73F /* PokedexModel.xcdatamodeld in Sources */,
 				584964A02D631F6C00F8D73F /* Persistence.swift in Sources */,
 				584964D82D632C8200F8D73F /* PokemonDetailView.swift in Sources */,
