@@ -2,7 +2,7 @@ import SwiftUI
 
 struct PokemonDetailView: View {
     let pokemon: Pokemon
-    @State private var isFavorite: Bool = false
+    @ObservedObject var favoriteManager = FavoriteManager.shared
 
     var body: some View {
         VStack {
@@ -11,7 +11,6 @@ struct PokemonDetailView: View {
                     .scaledToFit()
                     .frame(width: 200, height: 200)
                     .shadow(radius: 10)
-                    .transition(.scale) // Animation lors du chargement
             } placeholder: {
                 ProgressView()
             }
@@ -51,38 +50,29 @@ struct PokemonDetailView: View {
             Button(action: {
                 toggleFavorite()
             }) {
-                Label(isFavorite ? "Retirer des Favoris" : "Ajouter aux Favoris", systemImage: isFavorite ? "star.fill" : "star")
+                Label(favoriteManager.isFavorite(id: pokemon.id) ? "Retirer des Favoris" : "Ajouter aux Favoris",
+                      systemImage: favoriteManager.isFavorite(id: pokemon.id) ? "star.fill" : "star")
                     .padding()
-                    .background(isFavorite ? Color.yellow : Color.gray.opacity(0.3))
+                    .background(favoriteManager.isFavorite(id: pokemon.id) ? Color.yellow : Color.gray.opacity(0.3))
                     .cornerRadius(10)
             }
-            .animation(.easeInOut, value: isFavorite)
+            .animation(.easeInOut, value: favoriteManager.isFavorite(id: pokemon.id))
 
             Spacer()
         }
         .padding()
         .navigationTitle("Détails de \(pokemon.name.capitalized)")
-        .toolbar {
-            ToolbarItem(placement: .automatic) {
-                Button(action: {
-                    isFavorite.toggle()
-                }) {
-                    Image(systemName: isFavorite ? "heart.fill" : "heart")
-                        .foregroundColor(.red)
-                }
-            }
-        }
     }
 
     private func toggleFavorite() {
-        isFavorite.toggle()
-        if isFavorite {
-            FavoriteManager.shared.addFavorite(pokemon: pokemon)
+        if favoriteManager.isFavorite(id: pokemon.id) {
+            favoriteManager.removeFavorite(id: pokemon.id)
         } else {
-            FavoriteManager.shared.removeFavorite(id: pokemon.id)
+            favoriteManager.addFavorite(pokemon: pokemon)
         }
     }
 }
+
 
 #Preview {
     PokemonDetailView(pokemon: Pokemon(
