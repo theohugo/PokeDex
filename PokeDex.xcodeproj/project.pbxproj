@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		5812533E2D6C5C19000675D8 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5812533D2D6C5C19000675D8 /* NotificationManager.swift */; };
+		581253422D6C72A4000675D8 /* GuessPokemonGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 581253412D6C72A4000675D8 /* GuessPokemonGameView.swift */; };
 		584964972D631F6A00F8D73F /* PokeDexApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 584964962D631F6A00F8D73F /* PokeDexApp.swift */; };
 		584964992D631F6A00F8D73F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 584964982D631F6A00F8D73F /* ContentView.swift */; };
 		5849649B2D631F6C00F8D73F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5849649A2D631F6C00F8D73F /* Assets.xcassets */; };
@@ -55,6 +56,7 @@
 
 /* Begin PBXFileReference section */
 		5812533D2D6C5C19000675D8 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
+		581253412D6C72A4000675D8 /* GuessPokemonGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuessPokemonGameView.swift; sourceTree = "<group>"; };
 		584964932D631F6A00F8D73F /* PokeDex.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PokeDex.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		584964962D631F6A00F8D73F /* PokeDexApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokeDexApp.swift; sourceTree = "<group>"; };
 		584964982D631F6A00F8D73F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -160,6 +162,7 @@
 				584965292D634A8900F8D73F /* SettingsView.swift */,
 				5849652B2D635FC800F8D73F /* CombatView.swift */,
 				5812533D2D6C5C19000675D8 /* NotificationManager.swift */,
+				581253412D6C72A4000675D8 /* GuessPokemonGameView.swift */,
 			);
 			path = PokeDex;
 			sourceTree = "<group>";
@@ -320,6 +323,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				584965252D6341D400F8D73F /* PokemonStatEntity+CoreDataClass.swift in Sources */,
+				581253422D6C72A4000675D8 /* GuessPokemonGameView.swift in Sources */,
 				584964C72D6323CC00F8D73F /* Pokemon.swift in Sources */,
 				584964A32D631F6C00F8D73F /* PokeDex.xcdatamodeld in Sources */,
 				5849652C2D635FC800F8D73F /* CombatView.swift in Sources */,

@@ -18,6 +18,7 @@ struct ContentView: View {
     @State private var sortOption: SortOption = .alphabetical
     @State private var showFavoritesOnly: Bool = false
     @State private var showSettings: Bool = false  // **Settings modal state**
+    @State private var showMiniGame: Bool = false    // **Mini-jeu state**
     
     // **Computed filtered list with animated changes**
     var filteredPokemons: [Pokemon] {
@@ -158,16 +159,29 @@ struct ContentView: View {
                         Image(systemName: "gearshape")
                     }
                 }
+                // **Mini-jeu button in bottom bar**
+                ToolbarItem(placement: .bottomBar) {
+                    Button {
+                        showMiniGame = true
+                    } label: {
+                        Label("Mini Jeu", systemImage: "gamecontroller")
+                    }
+                }
             }
             // **Sheet for Pokemon detail**
             .sheet(item: $selectedPokemon) { pokemon in
                 PokemonDetailView(pokemon: pokemon)
             }
-            // **Settings modal**
+            // **Sheet for Settings modal**
             .sheet(isPresented: $showSettings) {
                 SettingsView(isLoading: $viewModel.isLoading) { newLimit in
                     viewModel.refreshPokemons(limit: newLimit)
                 }
+            }
+            // **Sheet for Mini Jeu**
+            .sheet(isPresented: $showMiniGame) {
+                // On passe la liste de Pokémon pour générer les propositions
+                GuessPokemonGameView(pokemons: viewModel.pokemons)
             }
             .task { viewModel.fetchPokemons() }
         }
