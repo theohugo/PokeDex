@@ -1,16 +1,14 @@
-//
-//  PokeDexApp.swift
-//  PokeDex
-//
-//  Created by Hugo RAGUIN on 2/17/25.
-//
-
 import SwiftUI
 
 @main
 struct PokeDexApp: App {
     let persistenceController = PersistenceController.shared
-
+    
+    init() {
+        NotificationManager.shared.requestAuthorization()
+        NotificationManager.shared.scheduleDailyReminder()
+    }
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
