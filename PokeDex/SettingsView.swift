@@ -3,14 +3,14 @@ import SwiftUI
 struct SettingsView: View {
     @Environment(\.dismiss) var dismiss
     @Binding var isLoading: Bool
-    @State private var newLimitText: String = ""
+    @State private var selectedLimit: Int = 150  // **Choix par défaut**
     var onRefresh: (Int) -> Void
 
     var body: some View {
         NavigationView {
             Group {
                 if isLoading {
-                    // **Loading animation view**
+                    // **Animation de chargement**
                     VStack {
                         ProgressView()
                             .progressViewStyle(CircularProgressViewStyle(tint: .blue))
@@ -23,8 +23,12 @@ struct SettingsView: View {
                 } else {
                     Form {
                         Section(header: Text("Paramètres du Pokédex")) {
-                            TextField("Nombre de Pokémon", text: $newLimitText)
-                                .keyboardType(.numberPad)
+                            Picker("Nombre de Pokémon", selection: $selectedLimit) {
+                                Text("150").tag(150)
+                                Text("500").tag(500)
+                                Text("1000").tag(1000)
+                            }
+                            .pickerStyle(SegmentedPickerStyle())
                         }
                     }
                 }
@@ -32,15 +36,13 @@ struct SettingsView: View {
             .navigationTitle("Paramètres")
             .toolbar {
                 if !isLoading {
-                    // **Refresh button**
+                    // **Bouton Rafraîchir**
                     ToolbarItem(placement: .confirmationAction) {
                         Button("Rafraîchir") {
-                            if let newLimit = Int(newLimitText), newLimit > 0 {
-                                onRefresh(newLimit)
-                            }
+                            onRefresh(selectedLimit)
                         }
                     }
-                    // **Cancel button**
+                    // **Bouton Annuler**
                     ToolbarItem(placement: .cancellationAction) {
                         Button("Annuler") {
                             dismiss()
@@ -50,10 +52,7 @@ struct SettingsView: View {
             }
         }
         .onChange(of: isLoading) { newValue in
-            // Dismiss the modal when loading is finished
-            if !newValue {
-                dismiss()
-            }
+            if !newValue { dismiss() }
         }
     }
 }
