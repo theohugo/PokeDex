@@ -35,6 +35,7 @@
 		584965262D6341D400F8D73F /* PokemonStatEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5849651E2D6341D400F8D73F /* PokemonStatEntity+CoreDataProperties.swift */; };
 		5849652A2D634A8900F8D73F /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 584965292D634A8900F8D73F /* SettingsView.swift */; };
 		5849652C2D635FC800F8D73F /* CombatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5849652B2D635FC800F8D73F /* CombatView.swift */; };
+		589B7F872D6CA5D500FBA791 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 589B7F862D6CA5D500FBA791 /* README.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -87,6 +88,7 @@
 		5849651E2D6341D400F8D73F /* PokemonStatEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PokemonStatEntity+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		584965292D634A8900F8D73F /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		5849652B2D635FC800F8D73F /* CombatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CombatView.swift; sourceTree = "<group>"; };
+		589B7F862D6CA5D500FBA791 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -163,6 +165,7 @@
 				5849652B2D635FC800F8D73F /* CombatView.swift */,
 				5812533D2D6C5C19000675D8 /* NotificationManager.swift */,
 				581253412D6C72A4000675D8 /* GuessPokemonGameView.swift */,
+				589B7F862D6CA5D500FBA791 /* README.md */,
 			);
 			path = PokeDex;
 			sourceTree = "<group>";
@@ -296,6 +299,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				589B7F872D6CA5D500FBA791 /* README.md in Resources */,
 				5849649E2D631F6C00F8D73F /* Preview Assets.xcassets in Resources */,
 				5849649B2D631F6C00F8D73F /* Assets.xcassets in Resources */,
 			);

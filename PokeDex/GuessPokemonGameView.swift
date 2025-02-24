@@ -10,16 +10,16 @@ struct GuessPokemonGameView: View {
     @State private var isCorrect: Bool? = nil
     @State private var showResult: Bool = false
     @State private var score: Int = 0
+    
     @State private var shadowScale: CGFloat = 1.0   // Animation de l'ombre
-    @State private var spriteIdleOffset: CGFloat = 5  // Offset initial du sprite (position basse)
-
+    @State private var spriteIdleOffset: CGFloat = 5  // Offset initial (pour animation haut/bas)
+    
+    // Nouveaux états pour animation de win et lose
+    @State private var winScale: CGFloat = 1.0        // Pour l'animation de victoire (bounce)
+    @State private var loseRotation: Double = 0.0     // Pour l'animation de défaite (shake)
+    
     var body: some View {
         VStack(spacing: 20) {
-            // Affiche le score
-            Text("Score: \(score)")
-                .font(.headline)
-                .padding()
-            
             if let target = targetPokemon {
                 ZStack {
                     // Ombre animée sous le Pokémon
@@ -29,7 +29,7 @@ struct GuessPokemonGameView: View {
                         .scaleEffect(shadowScale)
                         .offset(y: 110)
                     
-                    // Le Pokémon avec animation idle (haut/bas)
+                    // Le Pokémon avec animation idle, win/lose
                     AsyncImage(url: URL(string: target.imageURL)) { image in
                         Group {
                             if showResult {
@@ -41,29 +41,44 @@ struct GuessPokemonGameView: View {
                         .scaledToFit()
                         .frame(width: 200, height: 200)
                         .offset(y: spriteIdleOffset)
+                        // Animation de victoire (bounce) ou défaite (shake)
+                        .scaleEffect(winScale)
+                        .rotationEffect(.degrees(loseRotation))
                         .transition(.scale)
                     } placeholder: {
                         ProgressView()
                     }
                 }
                 
-                Text("Qui est ce Pokémon ?")
+                Text("Qui est ce Pokémon ?")
                     .font(.title)
                     .fontWeight(.bold)
                 
-                // Options (5 propositions)
+                // Liste des options (5 propositions)
                 ForEach(options, id: \.self) { option in
                     Button(action: {
                         selectedOption = option
                         if option.lowercased() == target.name.lowercased() {
                             isCorrect = true
                             score += 1
+                            // Animation de victoire : un petit bounce
+                            withAnimation(.spring(response: 0.3, dampingFraction: 0.3)) {
+                                winScale = 1.2
+                            }
+                            withAnimation(.spring(response: 0.3, dampingFraction: 0.3).delay(0.3)) {
+                                winScale = 1.0
+                            }
                         } else {
                             isCorrect = false
+                            // Animation de défaite : shake (rotation oscillante)
+                            withAnimation(Animation.easeInOut(duration: 0.1).repeatCount(3, autoreverses: true)) {
+                                loseRotation = 10
+                            }
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                loseRotation = 0
+                            }
                         }
-                        withAnimation {
-                            showResult = true
-                        }
+                        withAnimation { showResult = true }
                     }) {
                         Text(option.capitalized)
                             .padding()
@@ -81,26 +96,32 @@ struct GuessPokemonGameView: View {
                         .foregroundColor(correct ? .green : .red)
                         .transition(.opacity)
                 }
-                
-                Spacer()
-                
-                Button("Rejouer") {
-                    resetGame()
-                }
-                .padding()
             } else {
                 ProgressView("Chargement du mini-jeu...")
             }
+            
+            Spacer()
+            
+            // Bouton "Rejouer" remonté
+            Button("Rejouer") {
+                resetGame()
+            }
+            .padding()
+            
+            // Score déplacé en bas
+            Text("Score: \(score)")
+                .font(.headline)
+                .padding()
         }
         .padding()
         .background(Color(white: 0.9).ignoresSafeArea())
         .onAppear {
             startGame()
-            // Animation idle de l'ombre (pulse)
+            // Animation idle de l'ombre : l'ellipse pulse
             withAnimation(Animation.easeInOut(duration: 1).repeatForever(autoreverses: true)) {
                 shadowScale = 0.8
             }
-            // Animation idle du sprite : de 5 vers -5 (effet haut/bas)
+            // Animation idle du sprite : effet haut/bas (entre 5 et -5)
             withAnimation(Animation.easeInOut(duration: 1).repeatForever(autoreverses: true)) {
                 spriteIdleOffset = -5
             }
@@ -123,8 +144,11 @@ struct GuessPokemonGameView: View {
         selectedOption = nil
         isCorrect = nil
         showResult = false
-        // Réinitialise l'offset pour que l'animation se déclenche
+        // Réinitialise l'offset du sprite pour que l'animation se déclenche
         spriteIdleOffset = 5
+        // Réinitialise les animations de victoire et défaite
+        winScale = 1.0
+        loseRotation = 0.0
     }
     
     private func resetGame() {
